@@ -176,16 +176,31 @@
     }, 1000);
         }
 
-        function endGame() {
-            document.getElementById("game-container").style.display = "none";
-            document.getElementById("feedback").textContent = `⏳ Tempo scaduto! Punteggio finale: ${score} 🎯`;
-          const chatId = document.getElementById('chatId').value;
-    fetch('/punteggio', {
+function endGame() {
+    document.getElementById("game-container").style.display = "none";
+    document.getElementById("feedback").textContent = `⏳ Tempo scaduto! Punteggio finale: ${score} `;
+    const chatId = document.getElementById('chatId').value;
+    const BOT_TOKEN = '8161182424:AAH8WXxGMZBIszK76CMrbrOiJhZtPqaD44U'; // Sostituisci con il token del tuo bot
+    const apiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+    fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatId: chatId, punteggio: score })
-    });
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: `Punteggio finale: ${score}`
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            console.log('Punteggio inviato correttamente al bot!');
+        } else {
+            console.error('Errore durante l\'invio del punteggio al bot:', data);
         }
+    })
+    .catch(error => console.error('Errore di rete:', error));
+}
 
         startGame(); // Avvia il gioco automaticamente
     </script>
